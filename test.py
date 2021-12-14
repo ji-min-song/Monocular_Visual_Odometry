@@ -4,12 +4,12 @@ import cv2
 from visual_odometry import PinholeCamera, VisualOdometry
 
 cam = PinholeCamera(1241.0, 376.0, 718.8560, 718.8560, 607.1928, 185.2157)
-vo = VisualOdometry(cam,'C:/Users/default.DESKTOP-IT64657/jupyter notebook/210909. Epipolar Basic/kitti_odometry/data_odometry_poses/dataset/poses/00.txt')
+vo = VisualOdometry(cam,'./data/poses/00.txt')
 traj = np.zeros((600,600,3), dtype=np.uint8)
 total_error = 0
 
 for img_id in range(4541):
-	img = cv2.imread('C:/Users/default.DESKTOP-IT64657/jupyter notebook/210909. Epipolar Basic/kitti_odometry/data_odometry_color/dataset/sequences/00/image_2/'+str(img_id).zfill(6)+'.png', 0)
+	img = cv2.imread('./data/images/'+str(img_id).zfill(6)+'.png', 0)
 
 	vo.update(img, img_id)
 
