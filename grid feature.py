@@ -9,16 +9,35 @@ lk_params = dict(winSize  = (21, 21),
                  #maxLevel = 3,
                  criteria = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 30, 0.01))
 
-def featureTracking(image_ref, image_cur, px_ref):
-    kp2, st, err = cv2.calcOpticalFlowPyrLK(image_ref, image_cur, px_ref, None, **lk_params)  #shape: [k,2] [k,1] [k,1]
+def featureTracking(image_ref, image_cur, pt1):
+    pt2, st1, err1 = cv2.calcOpticalFlowPyrLK(image_ref, image_cur, pt1, None, **lk_params)
+    
+    st1 = st1.reshape(st1.shape[0])
+    pt1 = pt1[st1 == 1]
+    pt2 = pt2[st1 == 1]
+    #print(pt1.shape,pt2.shape)
+    
+    pt1_est, st2, err2 = cv2.calcOpticalFlowPyrLK(image_cur, image_ref, pt2, None, **lk_params) 
+    
+    st2 = st2.reshape(st2.shape[0])
+    pt1 = pt1[st2 == 1]
+    pt1_est = pt1_est[st2 == 1]
+    pt2 = pt2[st2 == 1]
+    #print(pt1.shape,pt1_est.shape,pt2.shape)
 
-    st = st.reshape(st.shape[0])
-    kp1 = px_ref[st == 1]
-    kp2 = kp2[st == 1]
+    #opticalflow 비교 후 filtering
+    del_indexes = []
+    for k in range(len(pt1)):
+        distance = np.sqrt((pt1[k,0]-pt1_est[k,0])**2+(pt1[k,1]-pt1_est[k,1])**2)
+        if distance > 1:
+            del_indexes.append(k)
+    pt1_filter = np.delete(pt1,del_indexes,axis = 0)
+    pt2_filter = np.delete(pt2,del_indexes,axis = 0)
+    #print(pt1_filter.shape,pt2_filter.shape)
 
-    return kp1, kp2
+    return pt1_filter, pt2_filter
 
-def gridFeature(image,step = 56):
+def gridFeature(image,step = 40):
     h,w = image.shape[:2]
     y,x = np.mgrid[step/2:h:step,step/2:w:step].reshape(2,-1).astype(int)
     pt1 = np.zeros(shape=(len(x),2),dtype = np.float32 )
