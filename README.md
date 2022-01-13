@@ -23,7 +23,7 @@ there are comparison about result between FAST argorithm and Grid feature
 
 <img src="image material/map_21.196328m.png" width="40%" height="30%"></img>
 <img src="image material/map_grid&filter_40step_7.389475m.png" width="40%" height="30%"></img>   
-### FAST argorithm(Mean Error=21.20m)　　　Grid feature(Mean Error=7.39m)   
+### FAST(Mean Error=21.20m)　　　　　　　　Grid feature(Mean Error=7.39m)   
   
 * * *   
  
